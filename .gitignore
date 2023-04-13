@@ -1,0 +1,5 @@
+.vscode
+/ftrace
+obj
+*.o
+coding-style-reports.log

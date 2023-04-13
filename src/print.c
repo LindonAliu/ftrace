@@ -28,7 +28,7 @@ void print_syscall(struct syscall_instance *instance, struct settings *set)
 {
     struct syscall_entry *entry = get_syscall_entry(instance->nbr);
 
-    PRINT("%s(", entry->name);
+    PRINT("Syscall %s (", entry->name);
     instance->printed_arg_count = 0;
     while (instance->printed_arg_count < entry->nb_args
         && entry->args[instance->printed_arg_count] != STRUCT_STAT_P) {
