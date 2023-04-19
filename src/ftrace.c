@@ -1,11 +1,11 @@
 /*
 ** EPITECH PROJECT, 2023
-** strace
+** ftrace
 ** File description:
 ** FreeKOSOVO
 */
 
-#include "strace.h"
+#include "ftrace.h"
 #include "stdio.h"
 
 #include <sys/ptrace.h>
@@ -64,7 +64,7 @@ int read_instructions(pid_t pid, struct settings *set)
     return 0;
 }
 
-int strace(pid_t pid, struct settings *set)
+int ftrace(pid_t pid, struct settings *set)
 {
     if (waitpid(pid, NULL, 0) < 0)
         return 84;

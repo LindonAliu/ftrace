@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2023
-** strace
+** ftrace
 ** File description:
 ** header
 */
@@ -34,4 +34,4 @@ void print_arg(uint64_t value, enum syscall_type type,
 void print_ret(uint64_t value, struct syscall_instance *instance,
     struct settings *set);
 
-int strace(pid_t pid, struct settings *set);
+int ftrace(pid_t pid, struct settings *set);

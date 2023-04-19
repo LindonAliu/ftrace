@@ -5,7 +5,7 @@
 ** FreeKOSOVO
 */
 
-#include "strace.h"
+#include "ftrace.h"
 #include "stdio.h"
 #include <unistd.h>
 #include <sys/ptrace.h>
@@ -48,5 +48,5 @@ int main(int ac, const char *av[])
             return -1;
     } else if (exec_command(&pid, av) < 0)
         return 84;
-    return strace(pid, &s) == 0 ? 0 : 84;
+    return ftrace(pid, &s) == 0 ? 0 : 84;
 }

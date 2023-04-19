@@ -1,11 +1,11 @@
 /*
 ** EPITECH PROJECT, 2023
-** strace
+** ftrace
 ** File description:
 ** printing
 */
 
-#include "strace.h"
+#include "ftrace.h"
 #include "syscall.h"
 #include "stdio.h"
 #include <string.h>

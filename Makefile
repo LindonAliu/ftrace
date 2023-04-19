@@ -6,10 +6,10 @@
 ##
 
 SRC		=	main.c		\
-			print.c		\
-			args.c		\
-			syscall.c	\
-			strace.c	\
+			syscall/print.c		\
+			syscall/args.c		\
+			syscall/syscall.c	\
+			ftrace.c			\
 
 OBJ		=	$(SRC:%.c=obj/%.o)
 
