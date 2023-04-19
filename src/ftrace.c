@@ -13,18 +13,7 @@
 #include <stddef.h>
 #include <sys/wait.h>
 
-void fill_struct(struct syscall_instance *inst, struct user_regs_struct source)
-{
-    inst->nbr = source.rax;
-    inst->args[0] = source.rdi;
-    inst->args[1] = source.rsi;
-    inst->args[2] = source.rdx;
-    inst->args[3] = source.r10;
-    inst->args[4] = source.r8;
-    inst->args[5] = source.r9;
-}
-
-static int next_instruction(pid_t pid)
+int next_instruction(pid_t pid)
 {
     if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) < 0)
         return -1;
@@ -40,26 +29,28 @@ static int is_syscall(pid_t pid, struct user_regs_struct *regs)
     return ((res & 0xff) == 0x0f) && (((res >> 8) & 0xff) == 0x05);
 }
 
+static int read_instruction(pid_t pid,
+    struct settings *set, struct user_regs_struct *regs)
+{
+    if (is_syscall(pid, regs)) {
+        if (handle_syscall(regs, pid, set) < 0)
+            return -1;
+        return 0;
+    }
+    if (next_instruction(pid) < 0)
+        return -1;
+    if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
+        return -1;
+    return 0;
+}
+
 int read_instructions(pid_t pid, struct settings *set)
 {
     struct user_regs_struct regs = {0};
-    struct syscall_instance inst = { .pid = pid };
 
     while (1) {
-        if (!is_syscall(pid, &regs)) {
-            if (next_instruction(pid) < 0)
-                return -1;
-            if (ptrace(PTRACE_GETREGS, pid, NULL, &regs) < 0)
-                return -1;
-            continue;
-        }
-        fill_struct(&inst, regs);
-        print_syscall(&inst, set);
-        if (next_instruction(pid) < 0)
-            break;
-        if (ptrace(PTRACE_GETREGS, pid, NULL, &regs) < 0)
-            return PRINT(") = ?\n"), 0;
-        print_ret(regs.rax, &inst, set);
+        if (read_instruction(pid, set, &regs) < 0)
+            return -1;
     }
     return 0;
 }

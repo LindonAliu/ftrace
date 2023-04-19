@@ -26,6 +26,11 @@ struct settings {
     bool pretty_args;
 };
 
+int next_instruction(pid_t pid);
+
+struct user_regs_struct;
+int handle_syscall(struct user_regs_struct *regs,
+    pid_t pid, struct settings *set);
 void print_syscall(struct syscall_instance *instance, struct settings *set);
 
 enum syscall_type;
