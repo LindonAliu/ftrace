@@ -46,12 +46,13 @@ int read_instructions(pid_t pid, struct settings *set)
     struct syscall_instance inst = { .pid = pid };
 
     while (1) {
-        if (next_instruction(pid) < 0)
-            break;
-        if (ptrace(PTRACE_GETREGS, pid, NULL, &regs) < 0)
-            return -1;
-        if (!is_syscall(pid, &regs))
+        if (!is_syscall(pid, &regs)) {
+            if (next_instruction(pid) < 0)
+                return -1;
+            if (ptrace(PTRACE_GETREGS, pid, NULL, &regs) < 0)
+                return -1;
             continue;
+        }
         fill_struct(&inst, regs);
         print_syscall(&inst, set);
         if (next_instruction(pid) < 0)
