@@ -33,7 +33,7 @@ int main(int ac, const char *av[])
     pid_t pid;
 
     if (ac < 2)
-        return 84;
+        return PRINT("%s: must have PROG [ARGS] or -p PID.\n", av[0]), 84;
     av++;
     if (strcmp(av[0], "-s") == 0) {
         s.pretty_args = true;
