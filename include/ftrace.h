@@ -47,7 +47,7 @@ void print_ret(uint64_t value, struct syscall_instance *instance,
  * @param pid The pid of the process
  * @param address The address to search
  */
-void get_proc_info(char **filepath_ptr, long *adress_ptr,
+void get_proc_info(char **filepath_ptr, long *address_ptr,
     pid_t pid, long address);
 
 int ftrace(pid_t pid, struct settings *set);
