@@ -15,11 +15,8 @@
 int is_internal_function(pid_t pid, struct user_regs_struct *regs) {
     long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
 
-    if ((res & 0xff) == 0xe8)
-        return 1;
-    else if ((res & 0xff) == 0xff)
-        return 1;
-    else if ((res & 0xff) == 0x9a)
+    res &= 0xff;
+    if (res == 0xe8 || res == 0xff || res == 0x9a)
         return 1;
     return 0;
 }

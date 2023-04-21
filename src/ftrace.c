@@ -35,11 +35,17 @@ static int read_instruction(pid_t pid,
     if (is_syscall(pid, regs)) {
         if (handle_syscall(regs, pid, set) < 0)
             return -1;
-        return 0;
     }
-    if (next_instruction(pid) < 0)
+    else if (is_internal_function(pid, regs)) {
+        if (next_instruction(pid) < 0)
+            return -1;
+        if (ptrace(PTRACE_GETREGSET, pid, NULL, regs) < 0)
+            return -1;
+        PRINT("Entering function %s at 0x%lld", "NULL", regs->rip);
+    }
+    else if (next_instruction(pid) < 0)
         return -1;
-    if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
+    else if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
         return -1;
     return 0;
 }

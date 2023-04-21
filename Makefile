@@ -10,6 +10,7 @@ SRC		=	main.c		\
 			syscall/args.c		\
 			syscall/syscall.c	\
 			syscall/read.c 		\
+			branch_type.c       \
 			ftrace.c			\
 
 OBJ		=	$(SRC:%.c=obj/%.o)

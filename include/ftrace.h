@@ -40,3 +40,5 @@ void print_ret(uint64_t value, struct syscall_instance *instance,
     struct settings *set);
 
 int ftrace(pid_t pid, struct settings *set);
+
+int is_internal_function(pid_t pid, struct user_regs_struct *regs);
