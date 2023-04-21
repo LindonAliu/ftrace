@@ -48,6 +48,6 @@ void print_ret(uint64_t value, struct syscall_instance *instance,
  * @param address The address to search
  */
 void get_proc_info(char **filepath_ptr, long *adress_ptr,
-    pid_t pid, long adress);
+    pid_t pid, long address);
 
 int ftrace(pid_t pid, struct settings *set);
