@@ -39,4 +39,15 @@ void print_arg(uint64_t value, enum syscall_type type,
 void print_ret(uint64_t value, struct syscall_instance *instance,
     struct settings *set);
 
+/**
+ * @brief Get the filepath of the object file and the address of the function
+ *
+ * @param filepath_ptr The address of the string to set the filepath
+ * @param address_ptr  The address of the ptr to set the address of the function
+ * @param pid The pid of the process
+ * @param address The address to search
+ */
+void get_proc_info(char **filepath_ptr, long *address_ptr,
+    pid_t pid, long address);
+
 int ftrace(pid_t pid, struct settings *set);

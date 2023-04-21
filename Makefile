@@ -13,6 +13,7 @@ SRC		=	main.c		\
 			nm/collect.c 		\
 			nm/load_elf.c 		\
 			ftrace.c			\
+			proc.c
 
 OBJ		=	$(SRC:%.c=obj/%.o)
 
