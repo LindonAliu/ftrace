@@ -39,4 +39,7 @@ void print_arg(uint64_t value, enum syscall_type type,
 void print_ret(uint64_t value, struct syscall_instance *instance,
     struct settings *set);
 
+void get_proc_info(char **filepath_ptr, long *adress_ptr,
+    pid_t pid, long adress);
+
 int ftrace(pid_t pid, struct settings *set);

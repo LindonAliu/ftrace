@@ -11,6 +11,7 @@ SRC		=	main.c		\
 			syscall/syscall.c	\
 			syscall/read.c 		\
 			ftrace.c			\
+			proc.c
 
 OBJ		=	$(SRC:%.c=obj/%.o)
 
