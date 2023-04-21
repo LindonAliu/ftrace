@@ -46,10 +46,8 @@ void get_proc_info(char **filepath_ptr, long *address_ptr,
     free(proc_filepath);
     if (f == NULL)
         return;
-    while (getline(&line_read, &size, f) > 0) {
-        if (fill_proc_info(filepath_ptr, address_ptr, line_read, address) == 0)
-            break;
-    }
+    while (getline(&line_read, &size, f) > 0 &&
+        fill_proc_info(filepath_ptr, address_ptr, line_read, address) == -1);
     free(line_read);
     fclose(f);
 }
