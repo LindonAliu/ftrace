@@ -12,7 +12,8 @@
 #include <sys/ptrace.h>
 #include <sys/user.h>
 
-int is_internal_function(pid_t pid, struct user_regs_struct *regs) {
+int is_internal_function(pid_t pid, struct user_regs_struct *regs)
+{
     long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
 
     res &= 0xff;
