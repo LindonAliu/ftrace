@@ -10,9 +10,9 @@ SRC		=	main.c		\
 			syscall/args.c		\
 			syscall/syscall.c	\
 			syscall/read.c 		\
-			branch_type.c       \
 			nm/collect.c 		\
 			nm/load_elf.c 		\
+			branch_type.c       \
 			ftrace.c			\
 			proc.c
 
