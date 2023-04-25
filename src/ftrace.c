@@ -6,8 +6,10 @@
 */
 
 #include "ftrace.h"
+#include "nm.h"
 #include "stdio.h"
 
+#include <stdlib.h>
 #include <sys/ptrace.h>
 #include <sys/user.h>
 #include <stddef.h>
@@ -37,12 +39,8 @@ static int read_instruction(pid_t pid,
             return -1;
     }
     if (is_internal_function(pid, regs)) {
-        if (next_instruction(pid) < 0)
+        if (handle_internal_function(pid, regs) < 0)
             return -1;
-        if (ptrace(PTRACE_GETREGSET, pid, NULL, regs) < 0)
-            return -1;
-        PRINT("Entering function %s at 0x%lld", "NULL", regs->rip);
-        // Getting the name of the function using the rip value
     }
     if (next_instruction(pid) < 0)
         return -1;
