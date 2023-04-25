@@ -15,6 +15,7 @@
 
 #include "nm.h"
 #include "elfn.h"
+#include "stdio.h"
 
 void *load_elf(char *name, size_t *length)
 {
@@ -53,6 +54,8 @@ static char *get_symbol_at(struct document *doc, size_t address)
     struct symbol *symbols = collect_symbols(doc);
     char *ret = NULL;
 
+    if (symbols == NULL)
+        return NULL;
     for (unsigned i = 0; symbols[i].name; i++) {
         if (address == symbols[i].value) {
             ret = strdup(symbols[i].name);
