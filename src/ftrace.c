@@ -42,6 +42,7 @@ static int read_instruction(pid_t pid,
         if (ptrace(PTRACE_GETREGSET, pid, NULL, regs) < 0)
             return -1;
         PRINT("Entering function %s at 0x%lld", "NULL", regs->rip);
+        // Getting the name of the function using the rip value
     }
     if (next_instruction(pid) < 0)
         return -1;
