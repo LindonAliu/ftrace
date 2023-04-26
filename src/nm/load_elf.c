@@ -15,7 +15,6 @@
 
 #include "nm.h"
 #include "elfn.h"
-#include "stdio.h"
 
 void *load_elf(char *name, size_t *length)
 {

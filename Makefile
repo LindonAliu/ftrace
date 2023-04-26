@@ -12,7 +12,7 @@ SRC		=	main.c		\
 			syscall/read.c 		\
 			nm/collect.c 		\
 			nm/load_elf.c 		\
-			branch_type.c       \
+			internal_functions.c       \
 			ftrace.c			\
 			proc.c
 
