@@ -6,8 +6,10 @@
 */
 
 #include "ftrace.h"
+#include "nm.h"
 #include "stdio.h"
 
+#include <stdlib.h>
 #include <sys/ptrace.h>
 #include <sys/user.h>
 #include <stddef.h>
@@ -35,7 +37,10 @@ static int read_instruction(pid_t pid,
     if (is_syscall(pid, regs)) {
         if (handle_syscall(regs, pid, set) < 0)
             return -1;
-        return 0;
+    }
+    if (is_internal_function(pid, regs)) {
+        if (handle_internal_function(pid, regs) < 0)
+            return -1;
     }
     if (next_instruction(pid) < 0)
         return -1;
