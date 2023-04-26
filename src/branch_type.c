@@ -17,12 +17,11 @@
 
 int is_internal_function(pid_t pid, struct user_regs_struct *regs)
 {
-    long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rax, NULL);
+    long long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
 
-    if (res == 0xe8 || res == 0xff || res == 0x9a) {
-        PRINT("FOUND INTERNAL CALL %ld\n", res);
+    res &= 0xff;
+    if (res == 0xe8 || res == 0xff || res == 0x9a)
         return 1;
-    }
     return 0;
 }
 
@@ -39,7 +38,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
     }
     get_proc_info(&filepath_ptr, &address_ptr, pid, regs->rip);
     char *function_name = get_symbol_name(filepath_ptr, regs->rip);
-    PRINT("Entering function %s at 0x%lld\n", function_name, regs->rip);
+    PRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
     free(function_name);
     return 0;
 }
