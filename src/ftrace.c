@@ -32,14 +32,15 @@ static int is_syscall(pid_t pid, struct user_regs_struct *regs)
 }
 
 static int read_instruction(pid_t pid,
-    struct settings *set, struct user_regs_struct *regs)
+    struct settings *set, struct user_regs_struct *regs,
+    int ac, const char *av[])
 {
     if (is_syscall(pid, regs)) {
         if (handle_syscall(regs, pid, set) < 0)
             return -1;
     }
     if (is_internal_function(pid, regs)) {
-        if (handle_internal_function(pid, regs) < 0)
+        if (handle_internal_function(pid, regs, ac, av) < 0)
             return -1;
     }
     if (next_instruction(pid) < 0)
@@ -49,23 +50,24 @@ static int read_instruction(pid_t pid,
     return 0;
 }
 
-int read_instructions(pid_t pid, struct settings *set)
+int read_instructions(pid_t pid, struct settings *set,
+    int ac, const char *av[])
 {
     struct user_regs_struct regs = {0};
 
     while (1) {
-        if (read_instruction(pid, set, &regs) < 0)
+        if (read_instruction(pid, set, &regs, ac, av) < 0)
             return -1;
     }
     return 0;
 }
 
-int ftrace(pid_t pid, struct settings *set)
+int ftrace(pid_t pid, struct settings *set, int ac, const char *av[])
 {
     if (waitpid(pid, NULL, 0) < 0)
         return 84;
     ptrace(PTRACE_SETOPTIONS, pid, NULL, PTRACE_O_TRACESYSGOOD);
-    if (read_instructions(pid, set) < 0)
+    if (read_instructions(pid, set, ac, av) < 0)
         return -1;
     return 0;
 }
