@@ -58,3 +58,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs);
 
 // Handling signals
 void display_signal(int status);
+
+// Displaying returns
+bool is_return(pid_t pid, struct user_regs_struct *regs);
+int handle_return(pid_t pid, struct user_regs_struct *regs);

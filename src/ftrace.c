@@ -45,6 +45,10 @@ static int read_instruction(pid_t pid,
         if (handle_internal_function(pid, regs) < 0)
             return -1;
     }
+    if (is_return(pid, regs)) {
+        if (handle_return(pid, regs) < 0)
+            return -1;
+    }
     if (next_instruction(pid) < 0)
         return -1;
     if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
