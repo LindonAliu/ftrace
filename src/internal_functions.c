@@ -16,14 +16,15 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-int is_internal_function(pid_t pid, struct user_regs_struct *regs)
+bool is_internal_function(pid_t pid, struct user_regs_struct *regs)
 {
     long long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
 
-    res &= 0xff;
-    if (res == 0xe8 || res == 0xff || res == 0x9a)
-        return 1;
-    return 0;
+    if ((res & 0xff) == 0xe8 || (res & 0xff) == 0x9a)
+        return true;
+    if ((res & 0xff) == 0xff && ((res >> (8 + 4)) & 0b11) == 0b01)
+        return true;
+    return false;
 }
 
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
