@@ -27,10 +27,21 @@ bool is_internal_function(pid_t pid, struct user_regs_struct *regs)
     return false;
 }
 
+static char *base_filename(char *filepath)
+{
+    char *filename = strrchr(filepath, '/');
+
+    if (filename != NULL)
+        filename += 1;
+    else
+        filename = filepath;
+    return filename;
+}
+
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
 {
-    char *filepath_ptr = NULL;
     long address;
+    char *filepath = NULL;
     char *function_name = NULL;
     char *filename = NULL;
 
@@ -38,13 +49,13 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
         return -1;
     if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
         return -1;
-    get_proc_info(&filepath_ptr, &address, pid, regs->rip);
-    function_name = get_symbol_name(filepath_ptr, regs->rip, &address);
-    filename = &strrchr(filepath_ptr, '/')[1];
+    get_proc_info(&filepath, &address, pid, regs->rip);
+    function_name = get_symbol_name(filepath, regs->rip, &address);
+    filename = base_filename(filepath);
     if (!function_name)
         asprintf(&function_name, "func_%lx@%s", address, filename);
     PRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
-    free(filepath_ptr);
+    free(filepath);
     free(function_name);
     return 0;
 }
