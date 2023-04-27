@@ -23,13 +23,15 @@ static int fill_proc_info(char **filepath_ptr, long *address_ptr,
 {
     long first_address = 0;
     long last_address = 0;
+    char *shift;
 
     first_address = strtol(line_read, NULL, 16);
-    last_address = strtol(strchr(line_read, '-') + 1, NULL, 16);
+    last_address = strtol(strchr(line_read, '-') + 1, &shift, 16);
     if (first_address <= address && address < last_address) {
         line_read[strlen(line_read) - 1] = '\0';
         *filepath_ptr = strdup(strrchr(line_read, ' ') + 1);
-        *address_ptr = address;
+        *address_ptr = first_address - strtol(strchr(shift + 1, ' ') + 1,
+            NULL, 16);
         return 0;
     }
     return -1;

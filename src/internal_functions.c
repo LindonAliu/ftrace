@@ -29,21 +29,19 @@ int is_internal_function(pid_t pid, struct user_regs_struct *regs)
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
 {
     char *filepath_ptr = NULL;
-    long address_ptr;
+    long address;
     char *function_name = NULL;
     char *filename = NULL;
 
     if (next_instruction(pid) < 0)
         return -1;
-    if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0) {
-        perror("handle_internal_function ptrace error");
+    if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
         return -1;
-    }
-    get_proc_info(&filepath_ptr, &address_ptr, pid, regs->rip);
-    function_name = get_symbol_name(filepath_ptr, regs->rip);
+    get_proc_info(&filepath_ptr, &address, pid, regs->rip);
+    function_name = get_symbol_name(filepath_ptr, regs->rip, &address);
     filename = &strrchr(filepath_ptr, '/')[1];
     if (!function_name)
-        asprintf(&function_name, "func_%llx@%s", regs->rip, filename);
+        asprintf(&function_name, "func_%lx@%s", address, filename);
     PRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
     free(filepath_ptr);
     free(function_name);

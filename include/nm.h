@@ -23,4 +23,4 @@ struct symbol {
 };
 
 struct symbol *collect_symbols(struct document *doc);
-char *get_symbol_name(char *filepath, long address);
+char *get_symbol_name(char *filepath, long address, long *start_address);
