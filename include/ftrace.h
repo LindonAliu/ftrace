@@ -52,5 +52,9 @@ void get_proc_info(char **filepath_ptr, long *address_ptr,
 
 int ftrace(pid_t pid, struct settings *set);
 
+// Handling the functions inside the binary that is being traced
 bool is_internal_function(pid_t pid, struct user_regs_struct *regs);
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs);
+
+// Handling signals
+void display_signal(int status);
