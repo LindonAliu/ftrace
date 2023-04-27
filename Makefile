@@ -33,7 +33,7 @@ obj/%.o:	src/%.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(EXEC):	$(OBJ)
-	$(CC) -o $(EXEC) $(OBJ)
+	$(CC) -o $(EXEC) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	find . -name "*.gcno" -delete
