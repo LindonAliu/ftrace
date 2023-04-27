@@ -14,7 +14,8 @@ SRC		=	main.c		\
 			nm/load_elf.c 		\
 			internal_functions.c       \
 			ftrace.c			\
-			proc.c
+			proc.c				\
+			signals.c
 
 OBJ		=	$(SRC:%.c=obj/%.o)
 

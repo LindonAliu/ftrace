@@ -17,10 +17,13 @@
 
 int next_instruction(pid_t pid)
 {
+    int process_status;
+
     if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) < 0)
         return -1;
-    if (waitpid(pid, NULL, 0) < 0)
+    if (waitpid(pid, &process_status, 0) < 0)
         return -1;
+    display_signal(process_status);
     return 0;
 }
 
