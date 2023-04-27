@@ -39,7 +39,11 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
         return -1;
     get_proc_info(&filepath_ptr, &address, pid, regs->rip);
     function_name = get_symbol_name(filepath_ptr, regs->rip, &address);
-    filename = &strrchr(filepath_ptr, '/')[1];
+    filename = strrchr(filepath_ptr, '/');
+    if (filename)
+        filename += 1;
+    else
+        filename = filepath_ptr;
     if (!function_name)
         asprintf(&function_name, "func_%lx@%s", address, filename);
     PRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
