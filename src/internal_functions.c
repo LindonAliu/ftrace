@@ -46,8 +46,10 @@ static int insert_into_stack(char *function_name,
     struct function_names *fn_s;
 
     fn_s = malloc(sizeof(struct function_names));
-    if (fn_s == NULL)
+    if (fn_s == NULL) {
+        free(function_name);
         return -1;
+    }
     fn_s->name = function_name;
     SLIST_INSERT_HEAD(func_name_s, fn_s, entries);
     return 0;
