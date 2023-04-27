@@ -26,14 +26,14 @@ int is_internal_function(pid_t pid, struct user_regs_struct *regs)
     return 0;
 }
 
-static char *base_filename(char *filepath_ptr)
+static char *base_filename(char *filepath)
 {
-    char *filename = strrchr(filepath_ptr, '/');
+    char *filename = strrchr(filepath, '/');
 
     if (filename)
         filename += 1;
     else
-        filename = filepath_ptr;
+        filename = filepath;
     return filename;
 }
 
