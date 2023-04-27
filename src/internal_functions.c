@@ -30,7 +30,7 @@ static char *base_filename(char *filepath)
 {
     char *filename = strrchr(filepath, '/');
 
-    if (filename)
+    if (filename != NULL)
         filename += 1;
     else
         filename = filepath;
