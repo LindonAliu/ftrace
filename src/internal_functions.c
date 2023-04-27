@@ -8,10 +8,12 @@
 #include "ftrace.h"
 #include "stdio.h"
 #include "nm.h"
+#include "stack.h"
 
 #include <stddef.h>
 #include <string.h>
 #include <sys/ptrace.h>
+#include <sys/queue.h>
 #include <sys/user.h>
 #include <sys/wait.h>
 #include <stdlib.h>
@@ -38,7 +40,21 @@ static char *base_filename(char *filepath)
     return filename;
 }
 
-int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
+static int insert_into_stack(char *function_name,
+    struct function_name_stack *func_name_s)
+{
+    struct function_names *fn_s;
+
+    fn_s = malloc(sizeof(struct function_names));
+    if (fn_s == NULL)
+        return -1;
+    fn_s->name = function_name;
+    SLIST_INSERT_HEAD(func_name_s, fn_s, entries);
+    return 0;
+}
+
+int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
+    struct function_name_stack *func_name_s)
 {
     long address;
     char *filepath = NULL;
@@ -55,7 +71,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
     if (!function_name)
         asprintf(&function_name, "func_%lx@%s", address, filename);
     PRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
+    insert_into_stack(function_name, func_name_s);
     free(filepath);
-    free(function_name);
     return 0;
 }

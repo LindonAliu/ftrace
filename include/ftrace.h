@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "stack.h"
+
 #include <inttypes.h>
 #include <stdbool.h>
 #include <sys/types.h>
@@ -54,11 +56,12 @@ int ftrace(pid_t pid, struct settings *set);
 
 // Handling the functions inside the binary that is being traced
 bool is_internal_function(pid_t pid, struct user_regs_struct *regs);
-int handle_internal_function(pid_t pid, struct user_regs_struct *regs);
+int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
+    struct function_name_stack *func_name_s);
 
 // Handling signals
 void display_signal(int status);
 
 // Displaying returns
 bool is_return(pid_t pid, struct user_regs_struct *regs);
-int handle_return(pid_t pid, struct user_regs_struct *regs);
+int handle_return(struct function_name_stack *func_name_s);
