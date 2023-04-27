@@ -39,8 +39,8 @@ static char *base_filename(char *filepath_ptr)
 
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs)
 {
-    char *filepath = NULL;
     long address;
+    char *filepath = NULL;
     char *function_name = NULL;
     char *filename = NULL;
 
