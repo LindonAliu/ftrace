@@ -65,7 +65,18 @@ static char *get_symbol_at(struct document *doc, size_t address)
     return ret;
 }
 
-char *get_symbol_name(char *filepath, long address)
+long find_start_address(struct document *doc)
+{
+    Elf64_Phdr *phdr = doc->elf + EH(e_phoff);
+
+    for (unsigned i = 0; i < EH(e_phnum); i++) {
+        if (phdr[i].p_type == PT_LOAD)
+            return phdr[i].p_vaddr;
+    }
+    return 0;
+}
+
+char *get_symbol_name(char *filepath, long address, long *virt_address)
 {
     struct document doc;
     void *_elf = load_elf(filepath, &doc.length);
@@ -79,7 +90,8 @@ char *get_symbol_name(char *filepath, long address)
         munmap(_elf, doc.length);
         return NULL;
     }
-    ret = get_symbol_at(&doc, address);
+    *virt_address = address + find_start_address(&doc) - *virt_address;
+    ret = get_symbol_at(&doc, *virt_address);
     munmap(_elf, doc.length);
     return ret;
 }
