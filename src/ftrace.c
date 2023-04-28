@@ -9,6 +9,7 @@
 #include "nm.h"
 #include "stack.h"
 #include "stdio.h"
+#include "handlers.h"
 
 #include <stdlib.h>
 #include <sys/ptrace.h>
@@ -29,27 +30,12 @@ int next_instruction(pid_t pid)
     return 0;
 }
 
-static int is_syscall(pid_t pid, struct user_regs_struct *regs)
-{
-    long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
-
-    return ((res & 0xff) == 0x0f) && (((res >> 8) & 0xff) == 0x05);
-}
-
 static int read_instruction(pid_t pid, struct settings *set,
     struct user_regs_struct *regs, struct function_name_stack *func_name_s)
 {
-    if (is_syscall(pid, regs)) {
-        if (handle_syscall(regs, pid, set) < 0)
-            return -1;
-    }
-    if (is_internal_function(pid, regs)) {
-        if (handle_internal_function(pid, regs, func_name_s) < 0)
-            return -1;
-    }
-    if (is_return(pid, regs)) {
-        if (handle_return(func_name_s) < 0)
-            return -1;
+    for (size_t i = 0; i < SIZE_ARRAY(READINGS); i++) {
+        if (READINGS[i].is_tracable(pid, regs))
+            return READINGS[i].handle(pid, regs, func_name_s, set);
     }
     if (next_instruction(pid) < 0)
         return -1;

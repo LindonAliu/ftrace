@@ -7,6 +7,7 @@
 
 #include "stdio.h"
 #include "ftrace.h"
+#include "handlers.h"
 
 #include <sys/queue.h>
 #include <sys/user.h>
@@ -23,10 +24,15 @@ bool is_return(pid_t pid, struct user_regs_struct *regs)
     return 0;
 }
 
-int handle_return(struct function_name_stack *func_name_s)
+int handle_return(pid_t pid UNUSED, struct user_regs_struct *regs UNUSED,
+    struct function_name_stack *func_name_s, struct settings *set UNUSED)
 {
     struct function_names *fn_s = SLIST_FIRST(func_name_s);
 
+    if (next_instruction(pid) < 0)
+        return -1;
+    if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)
+        return -1;
     if (fn_s == NULL)
         return 0;
     SLIST_REMOVE_HEAD(func_name_s, entries);

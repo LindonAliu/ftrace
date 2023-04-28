@@ -5,11 +5,13 @@
 ** FreeKOSOVO
 */
 
+#include "handlers.h"
 #include "ftrace.h"
 #include "stdio.h"
 
 #include <sys/ptrace.h>
 #include <sys/user.h>
+#include <stdlib.h>
 
 static void fill_struct(struct syscall_instance *inst,
     struct user_regs_struct *source)
@@ -23,8 +25,15 @@ static void fill_struct(struct syscall_instance *inst,
     inst->args[5] = source->r9;
 }
 
-int handle_syscall(struct user_regs_struct *regs,
-    pid_t pid, struct settings *set)
+bool is_syscall(pid_t pid, struct user_regs_struct *regs)
+{
+    long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
+
+    return ((res & 0xff) == 0x0f) && (((res >> 8) & 0xff) == 0x05);
+}
+
+int handle_syscall(pid_t pid, struct user_regs_struct *regs,
+    struct function_name_stack *func_name_s UNUSED, struct settings *set)
 {
     struct syscall_instance inst = { .pid = pid };
 
