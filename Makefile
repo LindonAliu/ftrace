@@ -15,7 +15,8 @@ SRC		=	main.c		\
 			internal_functions.c       \
 			ftrace.c			\
 			proc.c				\
-			signals.c
+			signals.c			\
+			return_detection.c
 
 OBJ		=	$(SRC:%.c=obj/%.o)
 
@@ -32,7 +33,7 @@ obj/%.o:	src/%.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(EXEC):	$(OBJ)
-	$(CC) -o $(EXEC) $(OBJ)
+	$(CC) -o $(EXEC) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	find . -name "*.gcno" -delete
