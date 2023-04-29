@@ -52,14 +52,16 @@ static char *get_symbol_at(struct document *doc, size_t address)
 {
     struct symbol *symbols = collect_symbols(doc);
     char *ret = NULL;
+    size_t name_length = -1;
 
     if (symbols == NULL)
         return NULL;
     for (unsigned i = 0; symbols[i].name; i++) {
-        if (address == symbols[i].value) {
-            ret = strdup(symbols[i].name);
-            break;
-        }
+        if (address != symbols[i].value
+            || strlen(symbols[i].name) >= name_length)
+            continue;
+        ret = strdup(symbols[i].name);
+        name_length = strlen(symbols[i].name);
     }
     free(symbols);
     return ret;
