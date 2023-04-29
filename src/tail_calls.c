@@ -54,15 +54,13 @@ int handle_tail_call(pid_t pid, struct user_regs_struct *regs,
         return -1;
     get_proc_info(&filepath, &address, pid, regs->rip);
     function_name = get_symbol_name(filepath, regs->rip, &address);
-    if (!function_name) {
-        free(filepath);
-        return 0;
+    if (function_name) {
+        func_name_s->count--;
+        IPRINT("Entering function %s at 0x%llx (Tail call)\n",
+            function_name, regs->rip);
+        func_name_s->count++;
+        replace_in_stack(function_name, func_name_s);
     }
-    func_name_s->count--;
-    IPRINT("Entering function %s at 0x%llx (Tail call)\n",
-        function_name, regs->rip);
-    func_name_s->count++;
-    replace_in_stack(function_name, func_name_s);
     free(filepath);
     return 0;
 }
