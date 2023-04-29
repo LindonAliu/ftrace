@@ -5,10 +5,14 @@
 ## FreeKOSOVO
 ##
 
+TESTS	=	toto
+
 CFLAGS	=	-fno-builtin
 
-all: toto
-	./functional_tests.sh
+all: $(TESTS)
+	$(foreach file, $(TESTS), ./functional_test.sh $(file))
 
 fclean:
-	rm -f toto
+	rm -f $(TESTS)
+
+.PHONY: all fclean

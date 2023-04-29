@@ -87,6 +87,7 @@ fclean: clean
 	$(RM) $(EXEC) $(EXEC_UT) $(EXEC_COV)
 	$(MAKE) fclean -C tests
 
+.NOTPARALLEL: re
 re:	fclean all
 
 debug: CFLAGS += -g3
