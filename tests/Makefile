@@ -5,12 +5,12 @@
 ## FreeKOSOVO
 ##
 
-TESTS	=	toto
+TESTS	=	toto nested
 
 CFLAGS	=	-fno-builtin
 
 all: $(TESTS)
-	$(foreach file, $(TESTS), ./functional_test.sh $(file))
+	$(foreach file, $(TESTS), ./functional_test.sh $(file);)
 
 fclean:
 	rm -f $(TESTS)

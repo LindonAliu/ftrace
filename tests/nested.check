@@ -1,0 +1,6 @@
+CHECK: Entering function main
+    CHECK: Entering function call_and_print
+        CHECK: Entering function func_{{[0-9a-zA-Z]+}}@[stack]
+        CHECK: Leaving function func_{{[0-9a-zA-Z]+}}@[stack]
+    CHECK: Leaving function call_and_print
+CHECK: Leaving function main
