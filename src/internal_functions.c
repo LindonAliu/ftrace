@@ -53,6 +53,7 @@ static int insert_into_stack(char *function_name,
     }
     fn_s->name = function_name;
     SLIST_INSERT_HEAD(func_name_s, fn_s, entries);
+    func_name_s->count++;
     return 0;
 }
 
@@ -73,7 +74,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
     filename = base_filename(filepath);
     if (!function_name)
         asprintf(&function_name, "func_%lx@%s", address, filename);
-    PRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
+    IPRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
     insert_into_stack(function_name, func_name_s);
     free(filepath);
     return 0;
