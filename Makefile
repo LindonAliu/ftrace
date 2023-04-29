@@ -51,12 +51,22 @@ obj/tests/src/%.o:	src/%.c
 $(EXEC):	$(OBJ_EXEC)
 	$(CC) -o $(EXEC) $(OBJ_EXEC) $(LDFLAGS)
 
-tests_run:	LDFLAGS += -lcriterion --coverage
-tests_run:	$(OBJ_TEST)
+unit_tests_run: LDFLAGS += -lcriterion --coverage
+unit_tests_run: $(EXEC) clean $(OBJ_TEST)
+	@printf "\033[1;33m -- Running unit tests --\033[0m\n"
 	$(CC) -o $(EXEC_TEST) $(OBJ_TEST) $(LDFLAGS)
 	./$(EXEC_TEST)
 	gcovr --exclude tests
 	gcovr --branches --exclude tests
+
+functionnal_tests_run:
+	@make -C tests -s
+
+tests_run:	$(EXEC) clean $(OBJ_TEST)
+	@printf "\033[1;32m -- Running tests --\033[0m\n"
+	@make unit_tests_run -s
+	@printf "\033[1;33m -- Running functionnal tests --\033[0m\n"
+	@make functionnal_tests_run
 
 clean:
 	find . -name "*.gcno" -delete
@@ -65,6 +75,7 @@ clean:
 
 fclean: clean
 	$(RM) $(EXEC)
+	make fclean -C tests
 
 re:	fclean all
 

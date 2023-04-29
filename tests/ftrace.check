@@ -1,0 +1,19 @@
+CHECK: Entering function main
+
+    CHECK: Entering function toto
+        CHECK: Entering function my_putstr
+            CHECK: Entering function my_strlen
+            CHECK: Leaving function my_strlen
+            CHECK: Syscall write
+        CHECK: Leaving function my_putstr
+    CHECK: Leaving function toto
+
+    CHECK: Entering function tutu
+        CHECK: Entering function my_putstr
+            CHECK: Entering function my_strlen
+            CHECK: Leaving function my_strlen
+            CHECK: Syscall write
+        CHECK: Leaving function my_putstr
+    CHECK: Leaving function tutu
+
+CHECK: Leaving function main

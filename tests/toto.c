@@ -5,22 +5,34 @@
 ** FreeKOSOVO
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <unistd.h>
+
+int my_strlen(char *str)
+{
+    int i = 0;
+
+    while (str[i])
+        i++;
+    return i;
+}
+
+void my_putstr(char *str)
+{
+    write(1, str, my_strlen(str));
+}
 
 void toto(void)
 {
-    printf("i am in toto()\n");
+    my_putstr("i am in toto()\n");
 }
 
 void tutu(void)
 {
-    printf("i am in tutu()\n");
+    my_putstr("i am in tutu()\n");
 }
 
 int main(void)
 {
     toto();
     tutu();
-    exit(0);
 }
