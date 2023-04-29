@@ -14,10 +14,8 @@
 #include <sys/ptrace.h>
 #include <stdlib.h>
 
-bool is_return(pid_t pid, struct user_regs_struct *regs)
+bool is_return(long long res)
 {
-    long long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
-
     res &= 0xff;
     if (res == 0xc3 || res == 0xcb)
         return 1;

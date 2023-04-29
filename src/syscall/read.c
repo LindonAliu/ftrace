@@ -25,10 +25,8 @@ static void fill_struct(struct syscall_instance *inst,
     inst->args[5] = source->r9;
 }
 
-bool is_syscall(pid_t pid, struct user_regs_struct *regs)
+bool is_syscall(long long res)
 {
-    long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
-
     return ((res & 0xff) == 0x0f) && (((res >> 8) & 0xff) == 0x05);
 }
 

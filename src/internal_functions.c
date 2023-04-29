@@ -19,10 +19,8 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-bool is_internal_function(pid_t pid, struct user_regs_struct *regs)
+bool is_internal_function(long long res)
 {
-    long long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
-
     if ((res & 0xff) == 0xe8 || (res & 0xff) == 0x9a)
         return true;
     if ((res & 0xff) == 0xff && ((res >> (8 + 4)) & 0b11) == 0b01)
