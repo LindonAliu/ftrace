@@ -13,6 +13,9 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+struct user_regs_struct;
+enum syscall_type;
+
 struct syscall_instance {
     /// The PID of the traced process
     pid_t pid;
@@ -30,38 +33,15 @@ struct settings {
 
 int next_instruction(pid_t pid);
 
-struct user_regs_struct;
-int handle_syscall(struct user_regs_struct *regs,
-    pid_t pid, struct settings *set);
 void print_syscall(struct syscall_instance *instance, struct settings *set);
-
-enum syscall_type;
 void print_arg(uint64_t value, enum syscall_type type,
     struct settings *set, pid_t pid);
 void print_ret(uint64_t value, struct syscall_instance *instance,
     struct settings *set);
 
-/**
- * @brief Get the filepath of the object file and the address of the function
- *
- * @param filepath_ptr The address of the string to set the filepath
- * @param address_ptr  The address of the ptr to set the address of the function
- * @param pid The pid of the process
- * @param address The address to search
- */
+void display_signal(int status);
+
 void get_proc_info(char **filepath_ptr, long *address_ptr,
     pid_t pid, long address);
 
 int ftrace(pid_t pid, struct settings *set);
-
-// Handling the functions inside the binary that is being traced
-bool is_internal_function(pid_t pid, struct user_regs_struct *regs);
-int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
-    struct function_name_stack *func_name_s);
-
-// Handling signals
-void display_signal(int status);
-
-// Displaying returns
-bool is_return(pid_t pid, struct user_regs_struct *regs);
-int handle_return(struct function_name_stack *func_name_s);

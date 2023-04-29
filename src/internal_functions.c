@@ -9,6 +9,7 @@
 #include "stdio.h"
 #include "nm.h"
 #include "stack.h"
+#include "handlers.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -56,7 +57,7 @@ static int insert_into_stack(char *function_name,
 }
 
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
-    struct function_name_stack *func_name_s)
+    struct function_name_stack *func_name_s, UNUSED struct settings *set)
 {
     long address;
     char *filepath = NULL;
