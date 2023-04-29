@@ -16,7 +16,8 @@ SRC		=	main.c		\
 			ftrace.c			\
 			proc.c				\
 			signals.c			\
-			return_detection.c
+			return_detection.c	\
+			tail_calls.c		\
 
 OBJ		=	$(SRC:%.c=obj/%.o)
 

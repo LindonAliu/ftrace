@@ -25,10 +25,12 @@ typedef int handle_t(pid_t pid, struct user_regs_struct *regs,
 is_tracable_t is_syscall;
 is_tracable_t is_internal_function;
 is_tracable_t is_return;
+is_tracable_t is_tail_call;
 
 handle_t handle_syscall;
 handle_t handle_internal_function;
 handle_t handle_return;
+handle_t handle_tail_call;
 
 struct reading {
     is_tracable_t *is_tracable;
@@ -38,5 +40,6 @@ struct reading {
 static const struct reading READINGS[] = {
     {&is_syscall, &handle_syscall},
     {&is_internal_function, &handle_internal_function},
-    {&is_return, &handle_return}
+    {&is_return, &handle_return},
+    {&is_tail_call, &handle_tail_call},
 };
