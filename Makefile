@@ -5,27 +5,33 @@
 ## Make nice stuff
 ##
 
-SRC		=	main.c		\
-			syscall/print.c		\
-			syscall/args.c		\
-			syscall/syscall.c	\
-			syscall/read.c 		\
-			nm/collect.c 		\
-			nm/load_elf.c 		\
-			internal_functions.c       \
-			ftrace.c			\
-			proc.c				\
-			signals.c			\
-			return_detection.c	\
-			tail_calls.c		\
+SRC_NT		=	main.c
 
-OBJ		=	$(SRC:%.c=obj/%.o)
+SRC_ALL		=   syscall/print.c				\
+				syscall/args.c				\
+				syscall/syscall.c			\
+				syscall/read.c 				\
+				nm/collect.c 				\
+				nm/load_elf.c 				\
+				internal_functions.c      	\
+				ftrace.c					\
+				proc.c						\
+				signals.c					\
+				return_detection.c			\
+				tail_calls.c
+
+SRC_TEST	=
+
+SRC_EXEC	=	$(SRC_ALL) $(SRC_NT)
+OBJ_EXEC	=	$(SRC_EXEC:%.c=obj/%.o)
+OBJ_TEST	=	$(SRC_TEST:%.c=obj/tests/%.o) $(SRC_ALL:%.c=obj/tests/src/%.o)
 
 CFLAGS		+=
 CPPFLAGS	+=	-iquote include -Wall -Wextra -D_GNU_SOURCE
 LDFLAGS		+=
 
 EXEC		=	ftrace
+EXEC_TEST	=	unit_tests
 
 all:	$(EXEC)
 
@@ -33,12 +39,29 @@ obj/%.o:	src/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
-$(EXEC):	$(OBJ)
-	$(CC) -o $(EXEC) $(OBJ) $(LDFLAGS) $(LDLIBS)
+obj/tests/tests/%.o:	tests/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+obj/tests/src/%.o:	CPPFLAGS += --coverage
+obj/tests/src/%.o:	src/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(EXEC):	$(OBJ_EXEC)
+	$(CC) -o $(EXEC) $(OBJ_EXEC) $(LDFLAGS)
+
+tests_run:	LDFLAGS += -lcriterion --coverage
+tests_run:	$(OBJ_TEST)
+	$(CC) -o $(EXEC_TEST) $(OBJ_TEST) $(LDFLAGS)
+	./$(EXEC_TEST)
+	gcovr --exclude tests
+	gcovr --branches --exclude tests
 
 clean:
 	find . -name "*.gcno" -delete
-	$(RM) $(OBJ)
+	$(RM) $(EXEC_TEST)
+	-$(RM) -r obj
 
 fclean: clean
 	$(RM) $(EXEC)
