@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2023
-** read
+** ftrace
 ** File description:
-** FreeKOSOVO
+** Support for tail calls
 */
 
 #include "ftrace.h"
@@ -11,12 +11,9 @@
 #include "stack.h"
 #include "handlers.h"
 
-#include <stddef.h>
-#include <string.h>
 #include <sys/ptrace.h>
 #include <sys/queue.h>
 #include <sys/user.h>
-#include <sys/wait.h>
 #include <stdlib.h>
 
 /// Detect E9, EB, FF /4, FF /5
