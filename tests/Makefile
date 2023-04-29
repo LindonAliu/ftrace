@@ -8,7 +8,7 @@
 CFLAGS	=	-fno-builtin
 
 all: toto
-	./testsFtrace.sh
+	./functional_tests.sh
 
 fclean:
 	rm -f toto

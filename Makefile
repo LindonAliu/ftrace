@@ -5,9 +5,9 @@
 ## Make nice stuff
 ##
 
-SRC_NT		=	main.c
+SRC_MAIN	=	main.c
 
-SRC_ALL		=   syscall/print.c				\
+SRC			=   syscall/print.c				\
 				syscall/args.c				\
 				syscall/syscall.c			\
 				syscall/read.c 				\
@@ -20,18 +20,25 @@ SRC_ALL		=   syscall/print.c				\
 				return_detection.c			\
 				tail_calls.c
 
-SRC_TEST	=
+SRC_TESTS	=
 
-SRC_EXEC	=	$(SRC_ALL) $(SRC_NT)
+SRC_EXEC	=	$(SRC) $(SRC_MAIN)
+SRC_UT		=	$(SRC) $(SRC_TESTS)
+SRC_COV		=	$(SRC) $(SRC_MAIN)
+
 OBJ_EXEC	=	$(SRC_EXEC:%.c=obj/%.o)
-OBJ_TEST	=	$(SRC_TEST:%.c=obj/tests/%.o) $(SRC_ALL:%.c=obj/tests/src/%.o)
-
-CFLAGS		+=
-CPPFLAGS	+=	-iquote include -Wall -Wextra -D_GNU_SOURCE
-LDFLAGS		+=
+OBJ_UT		=	$(SRC_UT:%.c=obj/cov/%.o)
+OBJ_COV		=	$(SRC_COV:%.c=obj/cov/%.o)
 
 EXEC		=	ftrace
-EXEC_TEST	=	unit_tests
+EXEC_UT		=	unit_tests
+EXEC_COV	=	tests/ftrace
+
+CFLAGS		+=	-Wall -Wextra
+CPPFLAGS	+=	-iquote include -D_GNU_SOURCE
+LDFLAGS		+=
+
+COV_FLAGS	=	--coverage -lcriterion
 
 all:	$(EXEC)
 
@@ -39,47 +46,51 @@ obj/%.o:	src/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
-obj/tests/tests/%.o:	tests/%.c
+obj/cov/tests/%.o:	tests/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
-obj/tests/src/%.o:	CPPFLAGS += --coverage
-obj/tests/src/%.o:	src/%.c
+obj/cov/%.o:	src/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(COV_FLAGS) -c -o $@ $<
 
 $(EXEC):	$(OBJ_EXEC)
 	$(CC) -o $(EXEC) $(OBJ_EXEC) $(LDFLAGS)
 
-unit_tests_run: LDFLAGS += -lcriterion --coverage
-unit_tests_run: $(EXEC) clean $(OBJ_TEST)
-	@printf "\033[1;33m -- Running unit tests --\033[0m\n"
-	$(CC) -o $(EXEC_TEST) $(OBJ_TEST) $(LDFLAGS)
-	./$(EXEC_TEST)
-	gcovr --exclude tests
-	gcovr --branches --exclude tests
+$(EXEC_UT):	$(OBJ_UT)
+	$(CC) -o $(EXEC_UT) $(OBJ_UT) $(LDFLAGS) $(COV_FLAGS)
 
-functionnal_tests_run:
-	@make -C tests -s
+$(EXEC_COV):	$(OBJ_COV)
+	$(CC) -o $(EXEC_COV) $(OBJ_COV) $(LDFLAGS) $(COV_FLAGS)
+
+unit_tests_run: $(EXEC_UT)
+	@printf "\033[1;33m -- Running unit tests --\033[0m\n"
+	./$(EXEC_UT)
+
+functional_tests_run: $(EXEC_COV)
+	$(MAKE) -C tests
 
 tests_run:	$(EXEC) clean $(OBJ_TEST)
 	@printf "\033[1;32m -- Running tests --\033[0m\n"
-	@make unit_tests_run -s
+	$(MAKE) unit_tests_run -s
 	@printf "\033[1;33m -- Running functionnal tests --\033[0m\n"
-	@make functionnal_tests_run
+	$(MAKE) functional_tests_run
+	@printf "\033[1;32m -- Showing coverage --\033[0m\n"
+	gcovr --exclude tests
+	gcovr --branches --exclude tests
 
 clean:
 	find . -name "*.gcno" -delete
-	$(RM) $(EXEC_TEST)
-	-$(RM) -r obj
+	$(RM) $(OBJ_EXEC) $(OBJ_UT) $(OBJ_COV)
 
 fclean: clean
-	$(RM) $(EXEC)
-	make fclean -C tests
+	$(RM) $(EXEC) $(EXEC_UT) $(EXEC_COV)
+	$(MAKE) fclean -C tests
 
 re:	fclean all
 
 debug: CFLAGS += -g3
 debug: re
 
-.PHONY: all tests_run clean_cov clean fclean re debug
+.PHONY: all tests_run clean fclean re debug
+.PHONY: functional_tests_run unit_tests_run
