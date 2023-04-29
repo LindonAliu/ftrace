@@ -33,7 +33,7 @@ bool is_syscall(pid_t pid, struct user_regs_struct *regs)
 }
 
 int handle_syscall(pid_t pid, struct user_regs_struct *regs,
-    struct function_name_stack *func_name_s UNUSED, struct settings *set)
+    UNUSED struct function_name_stack *func_name_s, struct settings *set)
 {
     struct syscall_instance inst = { .pid = pid };
 
