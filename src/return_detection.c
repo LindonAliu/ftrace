@@ -36,7 +36,8 @@ int handle_return(pid_t pid, struct user_regs_struct *regs,
     if (fn_s == NULL)
         return 0;
     SLIST_REMOVE_HEAD(func_name_s, entries);
-    PRINT("Leaving function %s\n", fn_s->name);
+    func_name_s->count--;
+    IPRINT("Leaving function %s\n", fn_s->name);
     free(fn_s->name);
     free(fn_s);
     return 0;

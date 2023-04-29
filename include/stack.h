@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <stddef.h>
 #include <sys/queue.h>
 
 struct function_names {
@@ -14,4 +15,7 @@ struct function_names {
     SLIST_ENTRY(function_names) entries;
 };
 
-SLIST_HEAD(function_name_stack, function_names);
+struct function_name_stack {
+    struct function_names *slh_first;
+    size_t count;
+};

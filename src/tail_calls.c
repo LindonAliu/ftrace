@@ -58,8 +58,10 @@ int handle_tail_call(pid_t pid, struct user_regs_struct *regs,
         free(filepath);
         return 0;
     }
-    PRINT("Entering function %s at 0x%llx (Tail call)\n",
+    func_name_s->count--;
+    IPRINT("Entering function %s at 0x%llx (Tail call)\n",
         function_name, regs->rip);
+    func_name_s->count++;
     replace_in_stack(function_name, func_name_s);
     free(filepath);
     return 0;
