@@ -24,7 +24,7 @@ bool is_return(pid_t pid, struct user_regs_struct *regs)
     return 0;
 }
 
-int handle_return(UNUSED pid_t pid, UNUSED struct user_regs_struct *regs,
+int handle_return(pid_t pid, struct user_regs_struct *regs,
     struct function_name_stack *func_name_s, UNUSED struct settings *set)
 {
     struct function_names *fn_s = SLIST_FIRST(func_name_s);
