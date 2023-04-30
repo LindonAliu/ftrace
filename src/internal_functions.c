@@ -39,7 +39,7 @@ static char *base_filename(char *filepath)
     return filename;
 }
 
-static int insert_into_stack(char *function_name,
+int insert_into_stack(char *function_name, unsigned long long rsp,
     struct function_name_stack *func_name_s)
 {
     struct function_names *fn_s;
@@ -50,6 +50,7 @@ static int insert_into_stack(char *function_name,
         return -1;
     }
     fn_s->name = function_name;
+    fn_s->rsp = rsp;
     SLIST_INSERT_HEAD(func_name_s, fn_s, entries);
     func_name_s->count++;
     return 0;
@@ -62,6 +63,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
     char *filepath = NULL;
     char *function_name = NULL;
     char *filename = NULL;
+    unsigned long long rsp = regs->rsp;
 
     if (next_instruction(pid) < 0)
         return -1;
@@ -73,7 +75,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
     if (!function_name)
         asprintf(&function_name, "func_%lx@%s", address, filename);
     IPRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
-    insert_into_stack(function_name, func_name_s);
+    insert_into_stack(function_name, rsp, func_name_s);
     free(filepath);
     return 0;
 }

@@ -26,8 +26,9 @@ bool is_tail_call(long long res)
     return false;
 }
 
-static int replace_in_stack(char *function_name,
-    struct function_name_stack *func_name_s)
+static int replace_in_stack(
+    char *function_name, struct user_regs_struct *regs,
+    struct function_name_stack *func_name_s, struct settings *set)
 {
     struct function_names *fn_s = SLIST_FIRST(func_name_s);
 
@@ -35,12 +36,21 @@ static int replace_in_stack(char *function_name,
         free(function_name);
         return -1;
     }
+    if (regs->rsp + 8 < fn_s->rsp) {
+        IPRINT("Entering function %s at 0x%llx (Jump call)\n",
+            function_name, regs->rip);
+        return insert_into_stack(function_name, regs->rsp + 8, func_name_s);
+    }
+    func_name_s->count--;
+    IPRINT("Entering function %s at 0x%llx (Tail call)\n",
+        function_name, regs->rip);
+    func_name_s->count++;
     fn_s->name = function_name;
     return 0;
 }
 
 int handle_tail_call(pid_t pid, struct user_regs_struct *regs,
-    struct function_name_stack *func_name_s, struct settings *set UNUSED)
+    struct function_name_stack *func_name_s, struct settings *set)
 {
     long address;
     char *filepath = NULL;
@@ -52,13 +62,11 @@ int handle_tail_call(pid_t pid, struct user_regs_struct *regs,
         return -1;
     get_proc_info(&filepath, &address, pid, regs->rip);
     function_name = get_symbol_name(filepath, regs->rip, &address);
-    if (function_name) {
-        func_name_s->count--;
-        IPRINT("Entering function %s at 0x%llx (Tail call)\n",
-            function_name, regs->rip);
-        func_name_s->count++;
-        replace_in_stack(function_name, func_name_s);
+    if (!function_name) {
+        free(filepath);
+        return 0;
     }
+    replace_in_stack(function_name, regs, func_name_s, set);
     free(filepath);
     return 0;
 }
