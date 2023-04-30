@@ -1,0 +1,13 @@
+CHECK: Entering function main
+
+    CHECK: Entering function toto
+        CHECK: Entering function printf
+        CHECK: Leaving function printf
+    CHECK: Leaving function toto
+
+    CHECK: Entering function tutu
+        CHECK: Entering function printf
+        CHECK: Leaving function printf
+    CHECK: Leaving function tutu
+
+CHECK: Leaving function main

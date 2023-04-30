@@ -7,3 +7,4 @@ a.out
 /tests/ftrace
 /tests/toto
 /tests/nested
+/tests/toto_printf
