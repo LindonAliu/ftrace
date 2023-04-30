@@ -32,21 +32,21 @@ Test(is_internal_function, test_ff_slash_2_opcode)
 
 Test(is_internal_function, test_ff_slash_3_opcode)
 {
-    char bytes[8] = { 0xff, 0b00010011, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00011000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_internal_function(*(long long *) bytes);
     cr_assert_eq(result, true);
 }
 
 Test(is_internal_function, test_ff_slash_4_opcode)
 {
-    char bytes[8] = { 0xff, 0b11100100, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00100000, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_internal_function(*(long long *) bytes);
     cr_assert_eq(result, false);
 }
 
 Test(is_internal_function, test_ff_slash_1_opcode)
 {
-    char bytes[8] = { 0xff, 0b00000001, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00001000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_internal_function(*(long long *) bytes);
     cr_assert_eq(result, false);
 }

@@ -29,35 +29,28 @@ Test(is_tail_call, test_eb_opcode)
 
 Test(is_tail_call, test_ff_slash_4)
 {
-    char bytes[8] = { 0xff, 0b11100100, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
-    bool result = is_tail_call(*(long long *) bytes);
-    cr_assert_eq(result, true);
-}
-
-Test(is_tail_call, test_ff_slash_4_2)
-{
-    char bytes[8] = { 0xff, 0b11100101, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00100000, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_tail_call(*(long long *) bytes);
     cr_assert_eq(result, true);
 }
 
 Test(is_tail_call, test_ff_slash_5)
 {
-    char bytes[8] = { 0xff, 0b11100101, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00101000, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_tail_call(*(long long *) bytes);
     cr_assert_eq(result, true);
 }
 
 Test(is_tail_call, test_ff_slash_1)
 {
-    char bytes[8] = { 0xff, 0b11000001, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00001000, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_tail_call(*(long long *) bytes);
     cr_assert_eq(result, false);
 }
 
 Test(is_tail_call, test_ff_slash_3)
 {
-    char bytes[8] = { 0xff, 0b11000011, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    char bytes[8] = { 0xff, 0b00011000, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00 };
     bool result = is_tail_call(*(long long *) bytes);
     cr_assert_eq(result, false);
 }
