@@ -28,8 +28,9 @@ struct syscall_instance {
 };
 
 struct settings {
-    bool pretty_args;
-    bool indent;
+    bool pretty_args : 1;
+    bool indent : 1;
+    bool function_args : 1;
 };
 
 int next_instruction(pid_t pid);

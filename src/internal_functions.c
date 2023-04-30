@@ -56,8 +56,20 @@ int insert_into_stack(char *function_name, unsigned long long rsp,
     return 0;
 }
 
+static void print_enter(
+    char *function_name, struct user_regs_struct *regs,
+    struct function_name_stack *func_name_s, struct settings *set)
+{
+    IPRINT("Entering function %s at 0x%llx", function_name, regs->rip);
+    if (set->function_args) {
+        PRINT(" (%#llx, %#llx, %#llx, %#llx, %#llx, %#llx)",
+            regs->rdi, regs->rsi, regs->rdx, regs->rcx, regs->r8, regs->r9);
+    }
+    PRINT("\n");
+}
+
 int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
-    struct function_name_stack *func_name_s, UNUSED struct settings *set)
+    struct function_name_stack *func_name_s, struct settings *set)
 {
     long address;
     char *filepath = NULL;
@@ -74,7 +86,7 @@ int handle_internal_function(pid_t pid, struct user_regs_struct *regs,
     filename = base_filename(filepath);
     if (!function_name)
         asprintf(&function_name, "func_%lx@%s", address, filename);
-    IPRINT("Entering function %s at 0x%llx\n", function_name, regs->rip);
+    print_enter(function_name, regs, func_name_s, set);
     insert_into_stack(function_name, rsp, func_name_s);
     free(filepath);
     return 0;

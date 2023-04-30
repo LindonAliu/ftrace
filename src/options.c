@@ -18,6 +18,9 @@ static void parse_option(char opt, struct settings *s)
     case 'i':
         s->indent = true;
         break;
+    case 'a':
+        s->function_args = true;
+        break;
     default:
         PRINT("Ignoring invalid option: %c\n", opt);
     }
