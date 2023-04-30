@@ -1,0 +1,1 @@
+CHECK: must have PROG [ARGS] or -p PID.

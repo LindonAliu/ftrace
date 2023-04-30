@@ -1,0 +1,2 @@
+CHECK: Entering function main
+CHECK: Leaving function main
