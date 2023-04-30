@@ -18,6 +18,7 @@ SRC			=   syscall/print.c				\
 				proc.c						\
 				signals.c					\
 				return_detection.c			\
+				options.c					\
 				tail_calls.c
 
 SRC_TESTS	=
@@ -81,6 +82,7 @@ tests_run:	$(EXEC) clean $(OBJ_TEST)
 
 clean:
 	find . -name "*.gcno" -delete
+	find . -name "*.gcda" -delete
 	$(RM) $(OBJ_EXEC) $(OBJ_UT) $(OBJ_COV)
 
 fclean: clean
