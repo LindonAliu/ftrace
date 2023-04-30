@@ -5,9 +5,10 @@
 ## FreeKOSOVO
 ##
 
-TESTS	=	toto nested
+TESTS	=	toto nested toto_printf
 
-CFLAGS	=	-fno-builtin
+CFLAGS	=	-fno-builtin -O0 -fno-stack-protector
+LDFLAGS	=	-Wl,-z,norelro
 
 all: $(TESTS) opt segfault
 	$(foreach file, $(TESTS), ./functional_test.sh $(file);)

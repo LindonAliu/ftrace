@@ -20,6 +20,7 @@ static int exec_command(int *pid, char *command[])
         if (ptrace(PT_TRACE_ME, 0, NULL, NULL) < 0)
             return -1;
         raise(SIGSTOP);
+        setenv("LD_BIND_NOW", "1", 1);
         execvp(command[0], command);
         perror(command[0]);
         return -1;
