@@ -21,7 +21,10 @@ SRC			=   syscall/print.c				\
 				options.c					\
 				tail_calls.c
 
-SRC_TESTS	=
+SRC_TESTS	=	tests/is_syscall_test.c		\
+				tests/is_internal_function_test.c	\
+				tests/is_return_test.c		\
+				tests/is_tail_call_test.c
 
 SRC_EXEC	=	$(SRC) $(SRC_MAIN)
 SRC_UT		=	$(SRC) $(SRC_TESTS)
