@@ -33,10 +33,13 @@ int next_instruction(pid_t pid)
 static int read_instruction(pid_t pid, struct settings *set,
     struct user_regs_struct *regs, struct function_name_stack *func_name_s)
 {
+    long long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
+
     for (size_t i = 0; i < SIZE_ARRAY(READINGS); i++) {
-        if (READINGS[i].is_tracable(pid, regs))
+        if (READINGS[i].is_tracable(res))
             return READINGS[i].handle(pid, regs, func_name_s, set);
     }
+
     if (next_instruction(pid) < 0)
         return -1;
     if (ptrace(PTRACE_GETREGS, pid, NULL, regs) < 0)

@@ -17,10 +17,8 @@
 #include <stdlib.h>
 
 /// Detect E9, EB, FF /4, FF /5
-bool is_tail_call(pid_t pid, struct user_regs_struct *regs)
+bool is_tail_call(long long res)
 {
-    long long res = ptrace(PTRACE_PEEKTEXT, pid, regs->rip, NULL);
-
     if ((res & 0xff) == 0xe9 || (res & 0xff) == 0xeb)
         return true;
     if ((res & 0xff) == 0xff && ((res >> (8 + 4)) & 0b11) == 0b10)

@@ -18,7 +18,7 @@ enum syscall_type;
 struct function_name_stack;
 struct settings;
 
-typedef bool is_tracable_t(pid_t pid, struct user_regs_struct *regs);
+typedef bool is_tracable_t(long long res);
 typedef int handle_t(pid_t pid, struct user_regs_struct *regs,
     struct function_name_stack *func_name_s, struct settings *set);
 

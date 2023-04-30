@@ -46,3 +46,5 @@ void get_proc_info(char **filepath_ptr, long *address_ptr,
     pid_t pid, long address);
 
 int ftrace(pid_t pid, struct settings *set);
+
+int parse_options(int ac, char *av[], struct settings *s);

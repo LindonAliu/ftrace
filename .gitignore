@@ -4,3 +4,6 @@ obj
 *.o
 coding-style-reports.log
 a.out
+/tests/ftrace
+/tests/toto
+/tests/nested

@@ -27,35 +27,6 @@ static int exec_command(int *pid, char *command[])
     return 0;
 }
 
-void parse_option(char opt, struct settings *s)
-{
-    switch (opt) {
-    case 's':
-        s->pretty_args = true;
-        break;
-    case 'i':
-        s->indent = true;
-        break;
-    default:
-        PRINT("Ignoring invalid option: %c\n", opt);
-    }
-}
-
-int parse_options(int ac, char *av[], struct settings *s)
-{
-    int i = 1;
-
-    while (i < ac) {
-        if (av[i][0] != '-')
-            break;
-        for (int j = 1; av[i][j] != '\0'; j++) {
-            parse_option(av[i][j], s);
-        }
-        i++;
-    }
-    return i;
-}
-
 int main(int ac, char *av[])
 {
     struct settings s = {0};
