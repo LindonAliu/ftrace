@@ -8,9 +8,6 @@
 #include <criterion/criterion.h>
 #include <stdbool.h>
 
-#include <criterion/criterion.h>
-#include <stdbool.h>
-
 bool is_tail_call(long long res);
 
 Test(is_tail_call, test_e9_opcode)
