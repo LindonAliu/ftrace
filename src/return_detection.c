@@ -23,7 +23,7 @@ bool is_return(long long res)
 }
 
 static void pop_stack(struct function_name_stack *func_name_s,
-    struct settings *set, char const *info)
+    struct settings *set)
 {
     struct function_names *fn_s = SLIST_FIRST(func_name_s);
 
@@ -31,7 +31,7 @@ static void pop_stack(struct function_name_stack *func_name_s,
         return;
     SLIST_REMOVE_HEAD(func_name_s, entries);
     func_name_s->count--;
-    IPRINT("Leaving function %s%s\n", fn_s->name, info);
+    IPRINT("Leaving function %s", fn_s->name);
     free(fn_s->name);
     free(fn_s);
 }
@@ -42,17 +42,22 @@ static void fix_stack(struct user_regs_struct *regs,
     struct function_names *fn_s = SLIST_FIRST(func_name_s);
 
     while (fn_s != NULL && regs->rsp > fn_s->rsp) {
-        pop_stack(func_name_s, set, " (Skipped)");
+        pop_stack(func_name_s, set);
+        PRINT(" (Skipped)\n");
         fn_s = SLIST_FIRST(func_name_s);
     }
     if (fn_s == NULL)
         return;
     if (regs->rsp < fn_s->rsp) {
-        IPRINT("Leaving function (No corresponding call at rsp %llu)\n",
+        IPRINT("Leaving function (No corresponding call at rsp %#llx)\n",
             regs->rsp);
         return;
     }
-    pop_stack(func_name_s, set, "");
+    pop_stack(func_name_s, set);
+    if (set->function_args) {
+        PRINT(" = %#llx", regs->rax);
+    }
+    PRINT("\n");
 }
 
 int handle_return(pid_t pid, struct user_regs_struct *regs,
