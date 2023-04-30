@@ -16,5 +16,7 @@ all: $(TESTS) opt segfault
 
 fclean:
 	rm -f $(TESTS)
+	rm -f opt
+	rm -f segfault
 
 .PHONY: all fclean
